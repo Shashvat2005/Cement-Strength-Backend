@@ -14,16 +14,12 @@ from database import save_prediction
 HF_TOKEN = os.getenv("HF_TOKEN")
 
 model_path = hf_hub_download(
-    repo_id="shashvat2005/cement-strength-model",
-    filename="stacking_regressor.pkl/stacking_regressor.pkl",
+    repo_id="starintern/cement-strength-model",
+    filename="stacking_regressor.pkl",
     token = HF_TOKEN
 )
 
 model = joblib.load(model_path)
-
-# Optional
-# scaler = joblib.load("model/scaler.pkl")
-
 
 
 def predict_strength(data, save=True):
