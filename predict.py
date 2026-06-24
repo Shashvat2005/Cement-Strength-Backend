@@ -40,14 +40,14 @@ def predict_strength(data, save=True):
         "7 Days": data.sevenDays
     }])
 
-    print(df.values.tolist())
+    # print(df.values.tolist())
 
     # df["Date"] = pd.to_datetime(
     #     df["Date"],
     #     format="%d.%m.%Y"
     # )
     df["Date"] = pd.to_datetime(df["Date"])
-    print(df.values.tolist())
+    # print(df.values.tolist())
 
     df["Year"] = df["Date"].dt.year
     df["Month"] = df["Date"].dt.month
@@ -56,7 +56,7 @@ def predict_strength(data, save=True):
     df.drop(columns=["Date"], inplace=True)
 
     prediction = float(model.predict(df)[0])
-    print(prediction)
+    # print(prediction)
 
     prediction_time_ms = round(
         (time.perf_counter() - start_time) * 1000
