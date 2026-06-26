@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class PredictionInput(BaseModel):
     date: str
-    plant: int
+    plant: str
     blaine: float
     residue90: float
     residue45: float
@@ -15,3 +15,4 @@ class PredictionInput(BaseModel):
 
 class BatchPredictionInput(BaseModel):
     raw_data: str
+    plant: str

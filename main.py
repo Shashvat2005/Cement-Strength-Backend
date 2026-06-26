@@ -29,7 +29,7 @@ def health_check():
 async def predict(data: PredictionInput):
     try:
         prediction = predict_strength(data)
-        # print(prediction)
+        print("Prediction:", prediction)
         return {
             "success": True,
             "prediction": prediction

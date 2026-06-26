@@ -23,6 +23,7 @@ model = joblib.load(model_path)
 
 
 def predict_strength(data, save=True):
+    # print(data)
 
     start_time = time.perf_counter()
 
@@ -40,29 +41,40 @@ def predict_strength(data, save=True):
         "7 Days": data.sevenDays
     }])
 
-    # print(df.values.tolist())
 
-    # df["Date"] = pd.to_datetime(
-    #     df["Date"],
-    #     format="%d.%m.%Y"
-    # )
     df["Date"] = pd.to_datetime(df["Date"])
-    # print(df.values.tolist())
 
     df["Year"] = df["Date"].dt.year
     df["Month"] = df["Date"].dt.month
     df["Quarter"] = df["Date"].dt.quarter
 
+    # print(df.head())
+
     df.drop(columns=["Date"], inplace=True)
+    plant_map = {
+        "ACI": 0,
+        "ACF": 1,
+        "SSCI": 2,
+        "SCI": 3,
+    }
+
+    df["Plant"] = df["Plant"].map(plant_map).fillna(4).astype(int)
+
+    # print(df.head())
 
     prediction = float(model.predict(df)[0])
-    # print(prediction)
+
+    # print("Predict", prediction)
 
     prediction_time_ms = round(
         (time.perf_counter() - start_time) * 1000
     )
 
     if save:
+        try:
+            data.plant = plant_map[data.plant]
+        except Exception as e:
+            print(e)
         save_prediction(
             data=data,
             prediction=prediction,
@@ -74,28 +86,30 @@ def predict_strength(data, save=True):
 def predict_strength_batch(data: BatchPredictionInput):
 
     results = []
+        # print(data)
 
     rows = data.raw_data.splitlines()
+    plant = data.plant
 
     for row in rows:
 
         values = row.split()
 
-        if len(values) != 11:
+        if len(values) != 10:
             continue
 
         sample = SimpleNamespace(
             date=values[0],
-            plant=int(values[1]),
-            blaine=float(values[2]),
-            residue90=float(values[3]),
-            residue45=float(values[4]),
-            loi=float(values[5]),
-            so3=float(values[6]),
-            c3s=float(values[7]),
-            c2s=float(values[8]),
-            twoDays=float(values[9]),
-            sevenDays=float(values[10])
+            plant=plant,
+            blaine=float(values[1]),
+            residue90=float(values[2]),
+            residue45=float(values[3]),
+            loi=float(values[4]),
+            so3=float(values[5]),
+            c3s=float(values[6]),
+            c2s=float(values[7]),
+            twoDays=float(values[8]),
+            sevenDays=float(values[9])
         )
 
         prediction = predict_strength(sample)
